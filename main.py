@@ -15,17 +15,17 @@ if __name__ == '__main__':
             if int(input("tamo de testezada? [0 ou 1]")):
                 atual_score = {"HighScore": 0}
                 # salva as informações do dicionario de informações relevantes em um arquivo .json para analise
-                with open(f'data/HighScore.json', 'w') as json_file:
+                with open(f'data/Memory/HighScore.json', 'w') as json_file:
                     json.dump(atual_score, json_file, indent=3, ensure_ascii=False)
                 json_file.close()
             break
 
-    video = VideoFileClip('data/IntroFinalVersion.mp4')
+    video = VideoFileClip('data/video/IntroFinalVersion.mp4')
     video.preview()
 
-    # Inicializa o mixer de audio
+    #Inicializa o mixer de audio
     pygame.mixer.init()
-    # Carrega a musica
+    #Carrega a musica
     if music_choose == 1:
         pygame.mixer.music.load("data/music/Dirty_Ninoff_Fantastic.mp3")
         pygame.mixer.music.set_volume(0.3)

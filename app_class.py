@@ -75,7 +75,7 @@ class App:
         screen.blit(text, pos)
 
     def load(self):
-        self.background = pygame.image.load('data/maze.png')
+        self.background = pygame.image.load('data/images/maze.png')
         self.background = pygame.transform.scale(self.background,
                                                  (MAZE_WIDTH, MAZE_HEIGHT))
         #abrindo o arquivo das paredes
@@ -83,7 +83,7 @@ class App:
 
         self.HighScore()
 
-        with open("data/walls.txt", 'r') as file:
+        with open("data/Memory/walls.txt", 'r') as file:
             for yidx, line in enumerate(file):
                 for xidx, char in enumerate(line):
                     if char == "1":
@@ -128,7 +128,7 @@ class App:
             enemy.direction *= 0
 
         self.coins = []
-        with open("data/walls.txt", 'r') as file:
+        with open("data/Memory/walls.txt", 'r') as file:
             for yidx, line in enumerate(file):
                 for xidx, char in enumerate(line):
                     if char == "C":
@@ -146,7 +146,7 @@ class App:
             self.backpack.append(vec(xidx, yidx))
 
     def HighScore(self):
-        with open(f'data/HighScore.json') as fp:
+        with open(f'data/Memory/HighScore.json') as fp:
             highscore = json.load(fp)
         self.high_score = highscore["HighScore"]
         fp.close()
@@ -180,7 +180,7 @@ class App:
                        START_TEXT_SIZE, GREEN_START_MENU, START_FONT, center=False)
         #Atualiza a screen, aplicando o texto de inicio
         pygame.display.set_caption("PacMan - By FelipeBazCode")
-        icon = pygame.image.load("data/pacman.png").convert_alpha()
+        icon = pygame.image.load("data/images/pacman.png").convert_alpha()
         w, h = icon.get_size()
         image = pygame.transform.smoothscale(icon, (int(w*0.25), int(h*0.25)))
         pygame.display.set_icon(icon)
@@ -233,7 +233,7 @@ class App:
         if self.player.lives == 0:
             atual_score = {"HighScore": self.player.current_score}
             # salva as informações do dicionario de informações relevantes em um arquivo .json para analise
-            with open(f'data/HighScore.json', 'w') as json_file:
+            with open(f'data/Memory/HighScore.json', 'w') as json_file:
                 json.dump(atual_score, json_file, indent=3, ensure_ascii=False)
             json_file.close()
             self.state = "game over"
