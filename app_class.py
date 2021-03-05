@@ -76,6 +76,7 @@ class App:
                                                  (MAZE_WIDTH, MAZE_HEIGHT))
         #abrindo o arquivo das paredes
         #criando a lista das paredes, com as coordenadas delas
+
         with open("walls.txt", 'r') as file:
             for yidx, line in enumerate(file):
                 for xidx, char in enumerate(line):
@@ -186,7 +187,7 @@ class App:
     def playing_draw(self):
         self.screen.fill(BACKGROUND)
         self.screen.blit(self.background, (TOP_BOTTOM_BUFFER//2, TOP_BOTTOM_BUFFER//2))
-        #self.draw_grid()
+        self.draw_grid()
         self.draw_coins()
         self.draw_text(f'SCORE: {self.player.current_score}', self.screen, [30, 2],
                        START_TEXT_SIZE, GREEN_START_MENU, START_FONT, center=False)
