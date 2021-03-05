@@ -1,4 +1,4 @@
-from settings import *
+from data.Memory.settings import *
 import pygame
 vec = pygame.math.Vector2
 
@@ -59,8 +59,8 @@ class Player:
     def eat_coin(self):
         self.app.coins.remove(self.grid_pos)
         self.current_score += 1
-        if self.app.high_score < self.current_score:
-            self.app.high_score += 1
+        if self.app.highscore < self.current_score:
+            self.app.highscore += 1
 
     def move(self, direction):
         self.stored_direction = direction

@@ -30,7 +30,7 @@ class App:
         self.enemy_pos = []
         self.backpack = []
         self.gates = []
-        self.high_score = 0
+        self.highscore = 0
         self.load()
         self.player = Player(self, vec(self.player_pos))
         self.make_enemies()
@@ -81,7 +81,7 @@ class App:
         #abrindo o arquivo das paredes
         #criando a lista das paredes, com as coordenadas delas
 
-        self.HighScore()
+        self.high_score()
 
         with open("data/Memory/walls.txt", 'r') as file:
             for yidx, line in enumerate(file):
@@ -112,8 +112,9 @@ class App:
 
     def draw_coins(self):
         for coin in self.coins:
-            pygame.draw.circle(self.screen, COIN_COLOUR, (int(coin.x*self.cell_width)+self.cell_width//2+TOP_BOTTOM_BUFFER//2,
-                                                          int(coin.y*self.cell_height)+self.cell_height//2+TOP_BOTTOM_BUFFER//2), 5)
+            pygame.draw.circle(self.screen, COIN_COLOUR, (int(coin.x*self.cell_width)+self.cell_width//2
+                                                          +TOP_BOTTOM_BUFFER//2, int(coin.y*self.cell_height)+
+                                                          self.cell_height//2+TOP_BOTTOM_BUFFER//2), 5)
 
     def reset(self):
         self.player.lives = 3
@@ -141,14 +142,15 @@ class App:
         for x in range(0, 4):
             xidx = 190 + x*(SLOT_WIDTH+SPACING)+2
             yidx = MAZE_HEIGHT+TOP_BOTTOM_BUFFER//2+42
-            pygame.draw.rect(self.screen, RED, (190 + x*(SLOT_WIDTH+SPACING), MAZE_HEIGHT+TOP_BOTTOM_BUFFER//2+40, SLOT_WIDTH, SLOT_HEIGHT))
+            pygame.draw.rect(self.screen, RED, (190 + x*(SLOT_WIDTH+SPACING), MAZE_HEIGHT+TOP_BOTTOM_BUFFER//2+40,
+                                                SLOT_WIDTH, SLOT_HEIGHT))
             pygame.draw.rect(self.screen, BACKGROUND, (xidx, yidx, SLOT_WIDTH-4, SLOT_HEIGHT-4))
             self.backpack.append(vec(xidx, yidx))
 
-    def HighScore(self):
+    def high_score(self):
         with open(f'data/Memory/HighScore.json') as fp:
-            highscore = json.load(fp)
-        self.high_score = highscore["HighScore"]
+            high = json.load(fp)
+        self.highscore = high["HighScore"]
         fp.close()
 
 ########################## Start FUNCTIONS ###############################
@@ -174,7 +176,7 @@ class App:
                        START_TEXT_SIZE, ORANGE_START_MENU, START_FONT)
         self.draw_text('1 PLAYER ONLY', self.screen, [WIDTH//2, HEIGHT//2],
                        START_TEXT_SIZE, CYAN_START_MENU, START_FONT)
-        self.draw_text(f'HIGH SCORE: {self.high_score}', self.screen, [3,0],
+        self.draw_text(f'HIGH SCORE: {self.highscore}', self.screen, [3, 0],
                        START_TEXT_SIZE, WHITE_START_MENU, START_FONT, center=False)
         self.draw_text('Credits: FelipeBazCode', self.screen, [5, HEIGHT-25],
                        START_TEXT_SIZE, GREEN_START_MENU, START_FONT, center=False)
@@ -203,6 +205,9 @@ class App:
                     self.player.move(vec(0, -1))
                 if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     self.player.move(vec(0, 1))
+                #Pause
+                if event.key == pygame.K_ESCAPE:
+                    self.pause_game()
 
     def playing_update(self):
         self.player.update()
@@ -220,7 +225,7 @@ class App:
         self.draw_coins()
         self.draw_text(f'SCORE: {self.player.current_score}', self.screen, [26, 2],
                        START_TEXT_SIZE, GREEN_START_MENU, START_FONT, center=False)
-        self.draw_text(f'HIGH SCORE: {self.high_score}', self.screen, [WIDTH//2+70, 13],
+        self.draw_text(f'HIGH SCORE: {self.highscore}', self.screen, [WIDTH//2+70, 13],
                        START_TEXT_SIZE, GREEN_START_MENU, START_FONT)
         self.draw_backpack()
         self.player.draw()
@@ -245,6 +250,42 @@ class App:
                 enemy.grid_pos = vec(enemy.enemy_start_pos)
                 enemy.pix_pos = enemy.get_pix_pos()
                 enemy.direction *= 0
+
+    def pause_draw(self):
+        # Pinta o fundo da cor de background
+        self.screen.fill(BACKGROUND)
+        # Faz a escrita na tela
+        self.draw_text('To resume press ENTER or ESCAPE', self.screen, [WIDTH // 2, HEIGHT // 2 - 50],
+                       START_TEXT_SIZE, ORANGE_START_MENU, START_FONT)
+        self.draw_text('To QUIT Press Q', self.screen, [WIDTH // 2, HEIGHT // 2],
+                       START_TEXT_SIZE, CYAN_START_MENU, START_FONT)
+        self.draw_text(f'Current Score: {self.player.current_score}', self.screen, [3, 0],
+                       START_TEXT_SIZE, WHITE_START_MENU, START_FONT, center=False)
+        self.draw_text('Credits: FelipeBazCode', self.screen, [5, HEIGHT - 25],
+                       START_TEXT_SIZE, GREEN_START_MENU, START_FONT, center=False)
+        icon = pygame.image.load("data/images/pacman.png").convert_alpha()
+        w, h = icon.get_size()
+        image = pygame.transform.smoothscale(icon, (int(w * 0.25), int(h * 0.25)))
+        self.screen.blit(image, ((WIDTH + (w * 0.25)) // 4, HEIGHT // 4 - 150))
+        pygame.display.update()
+
+    def pause_game(self):
+        self.pause_draw()
+        cond_quit = True
+        while cond_quit:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    # caso os eventos acabem, sera o running como "False", ou seja, o jogo foi encerrado.
+                    self.running = False
+                    cond_quit = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE or event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
+                        cond_quit = False
+                    if event.key == pygame.K_q:
+                        self.running = False
+                        cond_quit = False
+
+
 
 ########################## Game Over FUNCTIONS ###############################
 
