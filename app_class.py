@@ -1,3 +1,4 @@
+import json
 import sys
 from enemy_class import *
 from player_class import *
@@ -29,6 +30,7 @@ class App:
         self.enemy_pos = []
         self.backpack = []
         self.gates = []
+        self.high_score = 0
         self.load()
         self.player = Player(self, vec(self.player_pos))
         self.make_enemies()
@@ -78,6 +80,8 @@ class App:
                                                  (MAZE_WIDTH, MAZE_HEIGHT))
         #abrindo o arquivo das paredes
         #criando a lista das paredes, com as coordenadas delas
+
+        self.HighScore()
 
         with open("data/walls.txt", 'r') as file:
             for yidx, line in enumerate(file):
@@ -141,6 +145,12 @@ class App:
             pygame.draw.rect(self.screen, BACKGROUND, (xidx, yidx, SLOT_WIDTH-4, SLOT_HEIGHT-4))
             self.backpack.append(vec(xidx, yidx))
 
+    def HighScore(self):
+        with open(f'data/HighScore.json') as fp:
+            highscore = json.load(fp)
+        self.high_score = highscore["HighScore"]
+        fp.close()
+
 ########################## Start FUNCTIONS ###############################
 
     def start_events(self):
@@ -164,12 +174,12 @@ class App:
                        START_TEXT_SIZE, ORANGE_START_MENU, START_FONT)
         self.draw_text('1 PLAYER ONLY', self.screen, [WIDTH//2, HEIGHT//2],
                        START_TEXT_SIZE, CYAN_START_MENU, START_FONT)
-        self.draw_text('HIGH SCORE', self.screen, [3,0],
+        self.draw_text(f'HIGH SCORE: {self.high_score}', self.screen, [3,0],
                        START_TEXT_SIZE, WHITE_START_MENU, START_FONT, center=False)
-        self.draw_text('Credits: Felipe Baz', self.screen, [5, HEIGHT-25],
+        self.draw_text('Credits: FelipeBazCode', self.screen, [5, HEIGHT-25],
                        START_TEXT_SIZE, GREEN_START_MENU, START_FONT, center=False)
         #Atualiza a screen, aplicando o texto de inicio
-        pygame.display.set_caption("PacMan")
+        pygame.display.set_caption("PacMan - By FelipeBazCode")
         icon = pygame.image.load("data/pacman.png").convert_alpha()
         w, h = icon.get_size()
         image = pygame.transform.smoothscale(icon, (int(w*0.25), int(h*0.25)))
@@ -202,7 +212,7 @@ class App:
             if enemy.grid_pos == self.player.grid_pos:
                 self.die()
 
-        # Metodo de escrita na tela
+    # Metodo de escrita na tela
     def playing_draw(self):
         self.screen.fill(BACKGROUND)
         self.screen.blit(self.background, (TOP_BOTTOM_BUFFER//2, TOP_BOTTOM_BUFFER//2))
@@ -210,7 +220,7 @@ class App:
         self.draw_coins()
         self.draw_text(f'SCORE: {self.player.current_score}', self.screen, [26, 2],
                        START_TEXT_SIZE, GREEN_START_MENU, START_FONT, center=False)
-        self.draw_text('HIGH SCORE: 0', self.screen, [WIDTH//2+70, 13],
+        self.draw_text(f'HIGH SCORE: {self.high_score}', self.screen, [WIDTH//2+70, 13],
                        START_TEXT_SIZE, GREEN_START_MENU, START_FONT)
         self.draw_backpack()
         self.player.draw()
@@ -221,6 +231,11 @@ class App:
     def die(self):
         self.player.lives -= 1
         if self.player.lives == 0:
+            atual_score = {"HighScore": self.player.current_score}
+            # salva as informações do dicionario de informações relevantes em um arquivo .json para analise
+            with open(f'data/HighScore.json', 'w') as json_file:
+                json.dump(atual_score, json_file, indent=3, ensure_ascii=False)
+            json_file.close()
             self.state = "game over"
         else:
             self.player.grid_pos = vec(self.player.player_start_pos)
