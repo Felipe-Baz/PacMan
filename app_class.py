@@ -71,13 +71,13 @@ class App:
         screen.blit(text, pos)
 
     def load(self):
-        self.background = pygame.image.load('image/maze.png')
+        self.background = pygame.image.load('data/maze.png')
         self.background = pygame.transform.scale(self.background,
                                                  (MAZE_WIDTH, MAZE_HEIGHT))
         #abrindo o arquivo das paredes
         #criando a lista das paredes, com as coordenadas delas
 
-        with open("walls.txt", 'r') as file:
+        with open("data/walls.txt", 'r') as file:
             for yidx, line in enumerate(file):
                 for xidx, char in enumerate(line):
                     if char == "1":
@@ -121,7 +121,7 @@ class App:
             enemy.direction *= 0
 
         self.coins = []
-        with open("walls.txt", 'r') as file:
+        with open("data/walls.txt", 'r') as file:
             for yidx, line in enumerate(file):
                 for xidx, char in enumerate(line):
                     if char == "C":
