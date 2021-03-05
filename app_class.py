@@ -18,6 +18,7 @@ class App:
         #Configura o estado inicial do running do App como "rodando" ,ou seja, True.
         self.running = True
         #Configura o estado do app como "Start", ou seja, "iniciando".
+        self.background = None
         self.state = 'start'
         self.cell_width = MAZE_WIDTH//COLS
         self.cell_height = MAZE_HEIGHT//ROWS
@@ -26,6 +27,8 @@ class App:
         self.player_pos = None
         self.enemies = []
         self.enemy_pos = []
+        self.backpack = []
+        self.gates = []
         self.load()
         self.player = Player(self, vec(self.player_pos))
         self.make_enemies()
@@ -90,6 +93,7 @@ class App:
                     elif char == "B":
                         pygame.draw.rect(self.background, BACKGROUND, (xidx*self.cell_width, yidx*self.cell_height,
                                                                        self.cell_width, self.cell_height))
+                        self.gates.append(vec(xidx, yidx))
 
     def make_enemies(self):
         for idx, pos in enumerate(self.enemy_pos):
@@ -126,6 +130,16 @@ class App:
                     if char == "C":
                         self.coins.append(vec(xidx, yidx))
         self.state = 'playing'
+
+    def draw_backpack(self):
+        self.draw_text('LIVES', self.screen, [140//2, HEIGHT-(FOOTER+30)//2], 20, ORANGE_START_MENU, START_FONT)
+        #faz o quadrado de slot
+        for x in range(0, 4):
+            xidx = 190 + x*(SLOT_WIDTH+SPACING)+2
+            yidx = MAZE_HEIGHT+TOP_BOTTOM_BUFFER//2+42
+            pygame.draw.rect(self.screen, RED, (190 + x*(SLOT_WIDTH+SPACING), MAZE_HEIGHT+TOP_BOTTOM_BUFFER//2+40, SLOT_WIDTH, SLOT_HEIGHT))
+            pygame.draw.rect(self.screen, BACKGROUND, (xidx, yidx, SLOT_WIDTH-4, SLOT_HEIGHT-4))
+            self.backpack.append(vec(xidx, yidx))
 
 ########################## Start FUNCTIONS ###############################
 
@@ -194,10 +208,11 @@ class App:
         self.screen.blit(self.background, (TOP_BOTTOM_BUFFER//2, TOP_BOTTOM_BUFFER//2))
         self.draw_grid()
         self.draw_coins()
-        self.draw_text(f'SCORE: {self.player.current_score}', self.screen, [30, 2],
+        self.draw_text(f'SCORE: {self.player.current_score}', self.screen, [26, 2],
                        START_TEXT_SIZE, GREEN_START_MENU, START_FONT, center=False)
         self.draw_text('HIGH SCORE: 0', self.screen, [WIDTH//2+70, 13],
                        START_TEXT_SIZE, GREEN_START_MENU, START_FONT)
+        self.draw_backpack()
         self.player.draw()
         for enemy in self.enemies:
             enemy.draw()

@@ -69,15 +69,18 @@ class Player:
 
     def time_to_move(self):
         if int(self.pix_pos.x+TOP_BOTTOM_BUFFER//2) % self.app.cell_width == 0:
-            if self.direction == vec(1, 0) or self.direction == vec(-1, 0) or self.direction == vec(0,0):
+            if self.direction == vec(1, 0) or self.direction == vec(-1, 0) or self.direction == vec(0, 0):
                 return True
         if int(self.pix_pos.y+TOP_BOTTOM_BUFFER//2) % self.app.cell_height == 0:
-            if self.direction == vec(0, 1) or self.direction == vec(0, -1) or self.direction == vec(0,0):
+            if self.direction == vec(0, 1) or self.direction == vec(0, -1) or self.direction == vec(0, 0):
                 return True
         return False
 
     def can_move(self):
         for wall in self.app.walls:
             if vec(self.grid_pos+self.direction) == wall:
+                return False
+        for gate in self.app.gates:
+            if vec(self.grid_pos+self.direction) == gate:
                 return False
         return True

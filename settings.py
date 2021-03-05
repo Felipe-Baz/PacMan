@@ -1,10 +1,14 @@
 # Configurações da tela
-WIDTH, HEIGHT = 610, 670
+WIDTH, HEIGHT = 610, 775 #Antes 670 -> 775
 TOP_BOTTOM_BUFFER = 50
+#   Footer para as vidas e itens
+FOOTER = 105
 FPS = 60
-MAZE_WIDTH, MAZE_HEIGHT = WIDTH-TOP_BOTTOM_BUFFER, HEIGHT-TOP_BOTTOM_BUFFER
+MAZE_WIDTH, MAZE_HEIGHT = WIDTH-TOP_BOTTOM_BUFFER, HEIGHT-TOP_BOTTOM_BUFFER-FOOTER
 ROWS = 30
 COLS = 28
+SPACING = 40
+SLOT_WIDTH, SLOT_HEIGHT = 65, 65
 
 #configurações de cor
 BACKGROUND = (0, 0, 0)
@@ -22,6 +26,5 @@ START_TEXT_SIZE = 16
 START_FONT = 'arial black'
 GAME_OVER_TEXT_SIZE = 40
 
-#configuração de jogador
+#configuração de SLOT
 
-#configuração de monstros
