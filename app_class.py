@@ -3,7 +3,6 @@ from enemy_class import *
 from player_class import *
 
 #Inicializa o pygame
-
 pygame.init()
 #Cria um vector2 denominado vec
 vec = pygame.math.Vector2
@@ -156,6 +155,12 @@ class App:
         self.draw_text('Credits: Felipe Baz', self.screen, [5, HEIGHT-25],
                        START_TEXT_SIZE, GREEN_START_MENU, START_FONT, center=False)
         #Atualiza a screen, aplicando o texto de inicio
+        pygame.display.set_caption("PacMan")
+        icon = pygame.image.load("data/pacman.png").convert_alpha()
+        w, h = icon.get_size()
+        image = pygame.transform.smoothscale(icon, (int(w*0.25), int(h*0.25)))
+        pygame.display.set_icon(icon)
+        self.screen.blit(image, ((WIDTH+(w*0.25))//4, HEIGHT//4-150))
         pygame.display.update()
 
 ########################## Playing FUNCTIONS ###############################
@@ -212,6 +217,7 @@ class App:
                 enemy.direction *= 0
 
 ########################## Game Over FUNCTIONS ###############################
+
     def game_over_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -236,5 +242,4 @@ class App:
                        GAME_OVER_TEXT_SIZE-10, GREY, START_FONT)
         self.draw_text(quit_text, self.screen, [WIDTH // 2, HEIGHT//2+50],
                        GAME_OVER_TEXT_SIZE-10, RED, START_FONT)
-
         pygame.display.update()
