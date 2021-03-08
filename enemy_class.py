@@ -15,9 +15,11 @@ class Enemy:
         self.colour = self.set_colour()
         self.direction = vec(0, 0)
         self.enemy_start_pos = [pos.x, pos.y]
-        self.personality = self.set_personality()
+        self.state = None
+        #self.personality = 'normal'
         self.target = None
         self.speed = self.set_speed()
+
 
     def update(self):
         self.target = self.set_target()
@@ -53,23 +55,20 @@ class Enemy:
         elif self.number == 3:
             return 215, 159, 33
 
-    def set_personality(self):
-        if self.number == 0:
-            return "speedy"
-        elif self.number == 1:
-            return "slow"
-        elif self.number == 2:
-            return "random"
-        else:
-            return "scared"
+    #def set_personality(self):
+    #    pass
 
     def set_speed(self):
-        if self.personality == "speedy":
-            return 2
-        elif self.personality == "slow":
-            return 0.5
-        else:
+        if self.state == 'awake' == 1:
+            return 1.2
+        elif self.number == 1:
             return 1
+        elif self.number == 2:
+            return 0.7
+        elif self.number == 3:
+            return 0.6
+        else:
+            return 0.5
 
     def time_to_move(self):
         if int(self.pix_pos.x+TOP_BOTTOM_BUFFER//2) % self.app.cell_width == 0:
@@ -81,20 +80,17 @@ class Enemy:
         return False
 
     def move(self):
-        if self.personality == "random":
+        if self.state == 'drunk':
             self.direction = self.get_random_direction()
-        if self.personality == "slow":
+        if self.state == 'scared':
             self.direction = self.get_path_direction(self.target)
-        if self.personality == "speedy":
-            self.direction = self.get_path_direction(self.target)
-        if self.personality == "scared":
+        #Normal or awake
+        else:
             self.direction = self.get_path_direction(self.target)
 
     def set_target(self):
-        if self.personality == "speedy" or self.personality == "slow":
-            return self.app.player.grid_pos
         # scared
-        else:
+        if self.state == 'scared':
             if self.app.player.grid_pos[0] > COLS // 2 and self.app.player.grid_pos[1] > ROWS // 2:
                 return vec(1, 1)
             if self.app.player.grid_pos[0] > COLS // 2 and self.app.player.grid_pos[1] < ROWS // 2:
@@ -103,6 +99,9 @@ class Enemy:
                 return vec(COLS - 2, 1)
             else:
                 return vec(COLS - 2, ROWS - 2)
+        #Other states
+        else:
+            return self.app.player.grid_pos
 
     ########################### direction FUNCTIONS ###############################
 

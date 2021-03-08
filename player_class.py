@@ -12,9 +12,10 @@ class Player:
         self.stored_direction = None
         self.able_to_move = True
         self.current_score = 0
-        self.speed = 2 #Min:0.1 Max:2.5
+        self.state = 'normal'
+        self.speed = self.set_speed() #Min:0.1 Max:2.5 obs(so usar float)
         self.lives = 3
-
+        self.itens = []
 
     def update(self):
         if self.able_to_move:
@@ -32,6 +33,9 @@ class Player:
         if self.on_coin():
             self.eat_coin()
 
+        if self.on_item():
+            self.eat_item()
+
     def draw(self):
         pygame.draw.circle(self.app.screen, PLAYER_COLOUR,
                            (int(self.pix_pos.x), int(self.pix_pos.y)),
@@ -42,8 +46,6 @@ class Player:
         #pygame.draw.rect(self.app.screen, RED, (self.grid_pos[0]*self.app.cell_width+TOP_BOTTOM_BUFFER//2,
         #                                        self.grid_pos[1]*self.app.cell_height+TOP_BOTTOM_BUFFER//2,
         #                                        self.app.cell_width, self.app.cell_height), 1)
-
-
 
     def on_coin(self):
         if self.grid_pos in self.app.coins:
@@ -86,3 +88,37 @@ class Player:
             if vec(self.grid_pos+self.direction) == gate:
                 return False
         return True
+
+    def set_speed(self):
+        if self.state == 'awake':
+            return 2
+        else:
+            return 1
+
+    def on_item(self):
+        if self.grid_pos in self.app.itens["pos"]:
+            if int(self.pix_pos.x + TOP_BOTTOM_BUFFER // 2) % self.app.cell_width == 0:
+                if self.direction == vec(1, 0) or self.direction == vec(-1, 0):
+                    return True
+            if int(self.pix_pos.y + TOP_BOTTOM_BUFFER // 2) % self.app.cell_height == 0:
+                if self.direction == vec(0, 1) or self.direction == vec(0, -1):
+                    return True
+        else:
+            return False
+
+    def eat_item(self):
+        #na pos self.app.itens["pos"] tem um item
+        for i in range(0, len(self.app.itens["pos"])):
+            if self.grid_pos in self.app.itens["pos"]:
+                if self.grid_pos == self.app.itens["pos"][i]:
+                    if self.app.slot <= 4:
+                        self.itens.append(self.app.itens["key"][i])
+                        self.app.itens["pos"].pop(i)
+                        self.app.itens["key"].pop(i)
+                    else:
+                        self.itens.pop()
+                        self.itens.append(self.app.itens["key"][i])
+                        self.app.itens["pos"].pop(i)
+                        self.app.itens["key"].pop(i)
+        self.current_score += 10
+
