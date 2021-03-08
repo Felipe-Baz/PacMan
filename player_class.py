@@ -121,4 +121,6 @@ class Player:
                         self.app.itens["pos"].pop(i)
                         self.app.itens["key"].pop(i)
         self.current_score += 10
+        if self.app.highscore < self.current_score:
+            self.app.highscore += 10
 

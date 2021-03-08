@@ -62,7 +62,8 @@ class App:
     ########################### HELP FUNCTIONS ###############################
 
     # função para escrita na tela, com as configurações corretas.
-    def draw_text(self, words, screen, pos,
+    @staticmethod
+    def draw_text(words, screen, pos,
                   size, colour, font_name, center=True):
         # Seleciona a fonte
         font = pygame.font.SysFont(font_name, size)
@@ -148,7 +149,8 @@ class App:
             number = self.itens["key"][i]
             image = pygame.transform.smoothscale(self.itens_images[number - 1], (int(self.cell_width),
                                                                                  int(self.cell_height)))
-            self.screen.blit(image, (int(item.x * self.cell_width)+ TOP_BOTTOM_BUFFER//2, int(item.y * self.cell_height)+ TOP_BOTTOM_BUFFER//2))
+            self.screen.blit(image, (int(item.x * self.cell_width)+ TOP_BOTTOM_BUFFER//2,
+                                     int(item.y*self.cell_height)+TOP_BOTTOM_BUFFER//2))
 
     def reset(self):
         self.player.lives = 3
@@ -198,7 +200,7 @@ class App:
             pygame.draw.rect(self.screen, BACKGROUND, (xidx, yidx, SLOT_WIDTH - 4, SLOT_HEIGHT - 4))
             self.backpack.append(vec(xidx, yidx))
 
-    def draw_itens_backPack(self):
+    def draw_itens_backpack(self):
         for slot, item in enumerate(self.player.itens):
             image_edit = pygame.transform.smoothscale(self.itens_images[item-1], (int(SLOT_WIDTH - 2),
                                                                                       int(SLOT_HEIGHT - 2)))
@@ -289,7 +291,7 @@ class App:
                        START_TEXT_SIZE, GREEN_START_MENU, START_FONT)
         self.draw_backpack()
         self.draw_itens()
-        self.draw_itens_backPack()
+        self.draw_itens_backpack()
         self.player.draw()
         for enemy in self.enemies:
             enemy.draw()
