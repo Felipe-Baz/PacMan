@@ -11,7 +11,7 @@ class Player:
         self.player_start_pos = [pos.x, pos.y]
         self.stored_direction = None
         self.able_to_move = True
-        self.current_score = 330
+        self.current_score = 0
         self.state = 'normal'
         # Min:0.1 Max:2.5 obs(so usar float)
         self.speed = self.set_speed()

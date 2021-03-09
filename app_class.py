@@ -8,6 +8,7 @@ pygame.init()
 # Cria um vector2 denominado vec
 vec = pygame.math.Vector2
 
+
 # Define uma classe App
 class App:
     def __init__(self):
@@ -35,8 +36,9 @@ class App:
         self.gates = []
         self.highscore = 0
         self.maxcoin = 0
+        self.mapa = [{"Nome": None, "Level": None, "Mapa_Grid": None}]
         self.load()
-        print(self.maxcoin)
+        #self.MapaCria()
         self.player = Player(self, vec(self.player_pos))
         self.make_enemies()
 
@@ -66,7 +68,7 @@ class App:
         pygame.quit()
         sys.exit()
 
-########################### HELP FUNCTIONS ###############################
+    ########################### HELP FUNCTIONS ###############################
 
     # função para escrita na tela, com as configurações corretas.
     @staticmethod
@@ -95,10 +97,10 @@ class App:
         self.itens_images.append(pygame.image.load('data/itens/mascara.png'))
         self.itens_images.append(pygame.image.load('data/itens/raio.png'))
         self.high_score()
+        self.load_Mapa()
 
-        # abrindo o arquivo do mapa
-
-        with open("data/Memory/walls.txt", 'r') as file:
+        #abrindo o arquivo do mapa
+        with open("data/Memory/Mapas/walls.txt", 'r') as file:
             for yidx, line in enumerate(file):
                 for xidx, char in enumerate(line):
                     if char == "1":
@@ -112,13 +114,13 @@ class App:
                         # encontra a posição de inicio do player
                         self.player_pos = [xidx, yidx]
                     elif char in ["2", "3", "4", "5"]:
-                        # encontra a posição de inicio dos mobs
-                        self.enemy_pos.append([xidx, yidx])
+                         #encontra a posição de inicio dos mobs
+                         self.enemy_pos.append([xidx, yidx])
                     elif char == "B":
-                        # criando a lista das portas, com as coordenadas delas
-                        pygame.draw.rect(self.background, BACKGROUND, (xidx * self.cell_width, yidx * self.cell_height,
-                                                                       self.cell_width, self.cell_height))
-                        self.gates.append(vec(xidx, yidx))
+                         #criando a lista das portas, com as coordenadas delas
+                         pygame.draw.rect(self.background, BACKGROUND, (xidx * self.cell_width, yidx * self.cell_height,
+                                                                            self.cell_width, self.cell_height))
+                         self.gates.append(vec(xidx, yidx))
                     elif char == "W":  # item 1 "Weapon"
                         self.itens["pos"].append(vec(xidx, yidx))
                         self.itens["key"].append(1)
@@ -140,30 +142,34 @@ class App:
                         self.itens["key"].append(5)
                         self.maxcoin += 10
 
+
     def make_enemies(self):
         for idx, pos in enumerate(self.enemy_pos):
             self.enemies.append(Enemy(self, vec(pos), idx))
 
+
     def draw_grid(self):
         for x in range(WIDTH // self.cell_width):
-            pygame.draw.line(self.background, GREY, (x * self.cell_width, 0),
-                             (x * self.cell_width, HEIGHT))
+            pygame.draw.line(self.background, GREY, (x * self.cell_width, 0), (x * self.cell_width, HEIGHT))
         for x in range(HEIGHT // self.cell_height):
             pygame.draw.line(self.background, GREY, (0, x * self.cell_height), (WIDTH, x * self.cell_height))
+
 
     def draw_coins(self):
         for coin in self.coins:
             pygame.draw.circle(self.screen, COIN_COLOUR, (int(coin.x * self.cell_width) + self.cell_width // 2
-                                                          + TOP_BOTTOM_BUFFER // 2, int(coin.y * self.cell_height) +
-                                                          self.cell_height // 2 + TOP_BOTTOM_BUFFER // 2), 5)
+                                                      + TOP_BOTTOM_BUFFER // 2, int(coin.y * self.cell_height) +
+                                                      self.cell_height // 2 + TOP_BOTTOM_BUFFER // 2), 5)
+
 
     def draw_itens(self):
         for i, item in enumerate(self.itens["pos"]):
             number = self.itens["key"][i]
             image = pygame.transform.smoothscale(self.itens_images[number - 1], (int(self.cell_width),
-                                                                                 int(self.cell_height)))
-            self.screen.blit(image, (int(item.x * self.cell_width)+ TOP_BOTTOM_BUFFER//2,
-                                     int(item.y*self.cell_height)+TOP_BOTTOM_BUFFER//2))
+                                                                             int(self.cell_height)))
+            self.screen.blit(image, (int(item.x * self.cell_width) + TOP_BOTTOM_BUFFER // 2,
+                                 int(item.y * self.cell_height) + TOP_BOTTOM_BUFFER // 2))
+
 
     def reset(self):
         self.player.lives = 3
@@ -179,7 +185,7 @@ class App:
             enemy.direction *= 0
 
         self.coins = []
-        with open("data/Memory/walls.txt", 'r') as file:
+        with open("data/Memory/Mapas/walls.txt", 'r') as file:
             for yidx, line in enumerate(file):
                 for xidx, char in enumerate(line):
                     if char == "C":
@@ -201,6 +207,7 @@ class App:
                         self.itens["key"].append(5)
         self.state = 'playing'
 
+
     def draw_backpack(self):
         self.draw_text('LIVES', self.screen, [140 // 2, HEIGHT - (FOOTER + 30) // 2], 20, ORANGE_START_MENU, START_FONT)
         # faz o quadrado de slot
@@ -208,19 +215,20 @@ class App:
             xidx = 190 + x * (SLOT_WIDTH + SPACING) + 2
             yidx = MAZE_HEIGHT + TOP_BOTTOM_BUFFER // 2 + 42
             pygame.draw.rect(self.screen, RED,
-                             (190 + x * (SLOT_WIDTH + SPACING), MAZE_HEIGHT + TOP_BOTTOM_BUFFER // 2 + 40,
-                              SLOT_WIDTH, SLOT_HEIGHT))
+                         (190 + x * (SLOT_WIDTH + SPACING), MAZE_HEIGHT + TOP_BOTTOM_BUFFER // 2 + 40,
+                          SLOT_WIDTH, SLOT_HEIGHT))
             pygame.draw.rect(self.screen, BACKGROUND, (xidx, yidx, SLOT_WIDTH - 4, SLOT_HEIGHT - 4))
             self.backpack.append(vec(xidx, yidx))
 
+
     def draw_itens_backpack(self):
         for slot, item in enumerate(self.player.itens):
-            image_edit = pygame.transform.smoothscale(self.itens_images[item-1], (int(SLOT_WIDTH - 2),
-                                                                                      int(SLOT_HEIGHT - 2)))
+            image_edit = pygame.transform.smoothscale(self.itens_images[item - 1], (int(SLOT_WIDTH - 2),
+                                                                                int(SLOT_HEIGHT - 2)))
             self.screen.blit(image_edit, (self.backpack[slot].x, self.backpack[slot].y))
-            #self.screen.blit(image, (int(item.x * self.cell_width) + TOP_BOTTOM_BUFFER // 2,
+            # self.screen.blit(image, (int(item.x * self.cell_width) + TOP_BOTTOM_BUFFER // 2,
             #                         int(item.y * self.cell_height) + TOP_BOTTOM_BUFFER // 2))
-        self.slot = len(self.player.itens)+1
+        self.slot = len(self.player.itens) + 1
 
     def high_score(self):
         with open(f'data/Memory/HighScore.json') as fp:
@@ -228,7 +236,26 @@ class App:
         self.highscore = high["HighScore"]
         fp.close()
 
-########################## Start FUNCTIONS ###############################
+
+    def load_Mapa(self):
+        with open(f'data/Memory/Mapas/Mapa.json') as fp:
+            mapa_info = json.load(fp)
+        self.mapa.append(mapa_info)
+        fp.close()
+
+
+    #def MapaCria(self):
+    #    # salva as informações do dicionario de informações relevantes em um arquivo .json para analise
+    #    with open("data/Memory/walls.txt", 'r') as file:
+    #        maps = file
+    #     file.close()
+    #     with open(f'data/Memory/Mapa.json', 'w') as json_file:
+    #         json.dump({"Nome": 0, "Level": 0, "Mapa_Grid": maps}, json_file, indent=3, ensure_ascii=False)
+    #     json_file.close()
+
+
+
+    ########################## Start FUNCTIONS ###############################
 
     def start_events(self):
         for event in pygame.event.get():
@@ -239,8 +266,10 @@ class App:
                 # Configura o estado como "Jogando"
                 self.state = 'playing'
 
+
     def start_update(self):
         pass
+
 
     # Metodo de escrita na tela
     def start_draw(self):
@@ -259,10 +288,11 @@ class App:
         pygame.display.set_caption("PacMan - By FelipeBazCode")
         icon = pygame.image.load("data/images/pacman.png").convert_alpha()
         w, h = icon.get_size()
-        image = pygame.transform.smoothscale(icon, (int(w*0.25), int(h*0.25)))
+        image = pygame.transform.smoothscale(icon, (int(w * 0.25), int(h * 0.25)))
         pygame.display.set_icon(icon)
-        self.screen.blit(image, ((WIDTH+(w*0.25))//4, HEIGHT//4-150))
+        self.screen.blit(image, ((WIDTH + (w * 0.25)) // 4, HEIGHT // 4 - 150))
         pygame.display.update()
+
 
 ########################## Playing FUNCTIONS ###############################
 
@@ -284,6 +314,7 @@ class App:
                 if event.key == pygame.K_ESCAPE:
                     self.pause_game()
 
+
     def playing_update(self):
         self.player.update()
         for enemy in self.enemies:
@@ -292,10 +323,11 @@ class App:
             if enemy.grid_pos == self.player.grid_pos:
                 self.die()
 
+
     # Metodo de escrita na tela
     def playing_draw(self):
         self.screen.fill(BACKGROUND)
-        self.screen.blit(self.background, (TOP_BOTTOM_BUFFER//2, TOP_BOTTOM_BUFFER//2))
+        self.screen.blit(self.background, (TOP_BOTTOM_BUFFER // 2, TOP_BOTTOM_BUFFER // 2))
         # self.draw_grid()
         self.draw_coins()
         self.draw_text(f'SCORE: {self.player.current_score}', self.screen, [26, 2],
@@ -309,6 +341,7 @@ class App:
         for enemy in self.enemies:
             enemy.draw()
         pygame.display.update()
+
 
     def die(self):
         self.player.lives -= 1
@@ -328,6 +361,7 @@ class App:
                 enemy.pix_pos = enemy.get_pix_pos()
                 enemy.direction *= 0
 
+
     def pause_draw(self):
         # Pinta o fundo da cor de background
         self.screen.fill(BACKGROUND)
@@ -346,6 +380,7 @@ class App:
         self.screen.blit(image, ((WIDTH + (w * 0.25)) // 4, HEIGHT // 4 - 150))
         pygame.display.update()
 
+
     def pause_game(self):
         self.pause_draw()
         cond_quit = True
@@ -362,7 +397,8 @@ class App:
                         self.running = False
                         cond_quit = False
 
-########################## Game Over FUNCTIONS ###############################
+
+    ########################## Game Over FUNCTIONS ###############################
 
     def game_over_events(self):
         for event in pygame.event.get():
@@ -375,8 +411,10 @@ class App:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.running = False
 
+
     def game_over_update(self):
         pass
+
 
     def game_over_draw(self):
         self.screen.fill(BACKGROUND)
@@ -390,7 +428,8 @@ class App:
                        GAME_OVER_TEXT_SIZE - 10, RED, START_FONT)
         pygame.display.update()
 
-########################## Game Over FUNCTIONS ###############################
+
+    ########################## Game Over FUNCTIONS ###############################
 
     def game_win_events(self):
         for event in pygame.event.get():
@@ -403,21 +442,23 @@ class App:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.running = False
 
+
     def game_win_update(self):
         pass
+
 
     def game_win_draw(self):
         self.screen.fill(BACKGROUND)
         quit_text = "Press Escape to QUIT"
         again_text = "Press Space bar to Play again"
-        self.draw_text("YOU WON!!", self.screen, [WIDTH//2, (HEIGHT//2)-50],
+        self.draw_text("YOU WON!!", self.screen, [WIDTH // 2, (HEIGHT // 2) - 50],
                        GAME_OVER_TEXT_SIZE, RED, START_FONT)
-        self.draw_text(again_text, self.screen, [WIDTH//2, HEIGHT//2],
-                       GAME_OVER_TEXT_SIZE-10, GREY, START_FONT)
-        self.draw_text(quit_text, self.screen, [WIDTH//2, HEIGHT//2+50],
-                       GAME_OVER_TEXT_SIZE-10, RED, START_FONT)
+        self.draw_text(again_text, self.screen, [WIDTH // 2, HEIGHT // 2],
+                       GAME_OVER_TEXT_SIZE - 10, GREY, START_FONT)
+        self.draw_text(quit_text, self.screen, [WIDTH // 2, HEIGHT // 2 + 50],
+                       GAME_OVER_TEXT_SIZE - 10, RED, START_FONT)
         trofeu = pygame.image.load("data/images/trofeu.png").convert_alpha()
         w, h = trofeu.get_size()
-        image = pygame.transform.smoothscale(trofeu, (int(w*0.10), int(h*0.10)))
-        self.screen.blit(image, ((WIDTH-15)//3, HEIGHT//4-150))
+        image = pygame.transform.smoothscale(trofeu, (int(w * 0.10), int(h * 0.10)))
+        self.screen.blit(image, ((WIDTH - 15) // 3, HEIGHT // 4 - 150))
         pygame.display.update()
