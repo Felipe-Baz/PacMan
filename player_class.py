@@ -11,9 +11,10 @@ class Player:
         self.player_start_pos = [pos.x, pos.y]
         self.stored_direction = None
         self.able_to_move = True
-        self.current_score = 0
+        self.current_score = 330
         self.state = 'normal'
-        self.speed = self.set_speed() #Min:0.1 Max:2.5 obs(so usar float)
+        # Min:0.1 Max:2.5 obs(so usar float)
+        self.speed = self.set_speed()
         self.lives = 3
         self.itens = []
 
@@ -24,7 +25,6 @@ class Player:
             if self.stored_direction is not None:
                 self.direction = self.stored_direction
             self.able_to_move = self.can_move()
-
         #configurando a posição na grid em referencia a posição em pixels
         self.grid_pos[0] = (self.pix_pos[0]-TOP_BOTTOM_BUFFER+
                             self.app.cell_width//2)//self.app.cell_width+1
@@ -32,9 +32,15 @@ class Player:
                             self.app.cell_height//2)//self.app.cell_height+1
         if self.on_coin():
             self.eat_coin()
+            if self.current_score == self.app.maxcoin:
+                print("entrou")
+                self.app.state = 'win'
 
         if self.on_item():
             self.eat_item()
+            if self.current_score == self.app.maxcoin:
+                print("entrou")
+                self.app.state = 'win'
 
     def draw(self):
         pygame.draw.circle(self.app.screen, PLAYER_COLOUR,
@@ -123,4 +129,3 @@ class Player:
         self.current_score += 10
         if self.app.highscore < self.current_score:
             self.app.highscore += 10
-

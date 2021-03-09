@@ -34,7 +34,9 @@ class App:
         self.itens_images = []
         self.gates = []
         self.highscore = 0
+        self.maxcoin = 0
         self.load()
+        print(self.maxcoin)
         self.player = Player(self, vec(self.player_pos))
         self.make_enemies()
 
@@ -45,6 +47,10 @@ class App:
                 self.start_events()
                 self.start_update()
                 self.start_draw()
+            elif self.state == 'win':
+                self.game_win_events()
+                self.game_win_update()
+                self.game_win_draw()
             elif self.state == 'playing':
                 self.playing_events()
                 self.playing_update()
@@ -53,13 +59,14 @@ class App:
                 self.game_over_events()
                 self.game_over_update()
                 self.game_over_draw()
+
             else:
                 self.running = False
             self.clock.tick(FPS)
         pygame.quit()
         sys.exit()
 
-    ########################### HELP FUNCTIONS ###############################
+########################### HELP FUNCTIONS ###############################
 
     # função para escrita na tela, com as configurações corretas.
     @staticmethod
@@ -100,6 +107,7 @@ class App:
                     elif char == "C":
                         # criando a lista dos moedas, com as coordenadas delas
                         self.coins.append(vec(xidx, yidx))
+                        self.maxcoin += 1
                     elif char == "P":
                         # encontra a posição de inicio do player
                         self.player_pos = [xidx, yidx]
@@ -114,18 +122,23 @@ class App:
                     elif char == "W":  # item 1 "Weapon"
                         self.itens["pos"].append(vec(xidx, yidx))
                         self.itens["key"].append(1)
+                        self.maxcoin += 10
                     elif char == "H":  # item 2 "Hungry"
                         self.itens["pos"].append(vec(xidx, yidx))
                         self.itens["key"].append(2)
+                        self.maxcoin += 10
                     elif char == "D":  # item 3 "Drunk"
                         self.itens["pos"].append(vec(xidx, yidx))
                         self.itens["key"].append(3)
+                        self.maxcoin += 10
                     elif char == "S":  # item 4 "Scared"
                         self.itens["pos"].append(vec(xidx, yidx))
                         self.itens["key"].append(4)
+                        self.maxcoin += 10
                     elif char == "R":  # item 5 "Awake"
                         self.itens["pos"].append(vec(xidx, yidx))
                         self.itens["key"].append(5)
+                        self.maxcoin += 10
 
     def make_enemies(self):
         for idx, pos in enumerate(self.enemy_pos):
@@ -215,7 +228,7 @@ class App:
         self.highscore = high["HighScore"]
         fp.close()
 
-    ########################## Start FUNCTIONS ###############################
+########################## Start FUNCTIONS ###############################
 
     def start_events(self):
         for event in pygame.event.get():
@@ -246,12 +259,12 @@ class App:
         pygame.display.set_caption("PacMan - By FelipeBazCode")
         icon = pygame.image.load("data/images/pacman.png").convert_alpha()
         w, h = icon.get_size()
-        image = pygame.transform.smoothscale(icon, (int(w * 0.25), int(h * 0.25)))
+        image = pygame.transform.smoothscale(icon, (int(w*0.25), int(h*0.25)))
         pygame.display.set_icon(icon)
-        self.screen.blit(image, ((WIDTH + (w * 0.25)) // 4, HEIGHT // 4 - 150))
+        self.screen.blit(image, ((WIDTH+(w*0.25))//4, HEIGHT//4-150))
         pygame.display.update()
 
-    ########################## Playing FUNCTIONS ###############################
+########################## Playing FUNCTIONS ###############################
 
     def playing_events(self):
         for event in pygame.event.get():
@@ -282,7 +295,7 @@ class App:
     # Metodo de escrita na tela
     def playing_draw(self):
         self.screen.fill(BACKGROUND)
-        self.screen.blit(self.background, (TOP_BOTTOM_BUFFER // 2, TOP_BOTTOM_BUFFER // 2))
+        self.screen.blit(self.background, (TOP_BOTTOM_BUFFER//2, TOP_BOTTOM_BUFFER//2))
         # self.draw_grid()
         self.draw_coins()
         self.draw_text(f'SCORE: {self.player.current_score}', self.screen, [26, 2],
@@ -349,7 +362,7 @@ class App:
                         self.running = False
                         cond_quit = False
 
-    ########################## Game Over FUNCTIONS ###############################
+########################## Game Over FUNCTIONS ###############################
 
     def game_over_events(self):
         for event in pygame.event.get():
@@ -375,4 +388,36 @@ class App:
                        GAME_OVER_TEXT_SIZE - 10, GREY, START_FONT)
         self.draw_text(quit_text, self.screen, [WIDTH // 2, HEIGHT // 2 + 50],
                        GAME_OVER_TEXT_SIZE - 10, RED, START_FONT)
+        pygame.display.update()
+
+########################## Game Over FUNCTIONS ###############################
+
+    def game_win_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                # caso os eventos acabem, sera o running como "False", ou seja, o jogo foi encerrado.
+                self.running = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                # Configura o estado como "Jogando"
+                self.reset()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.running = False
+
+    def game_win_update(self):
+        pass
+
+    def game_win_draw(self):
+        self.screen.fill(BACKGROUND)
+        quit_text = "Press Escape to QUIT"
+        again_text = "Press Space bar to Play again"
+        self.draw_text("YOU WON!!", self.screen, [WIDTH//2, (HEIGHT//2)-50],
+                       GAME_OVER_TEXT_SIZE, RED, START_FONT)
+        self.draw_text(again_text, self.screen, [WIDTH//2, HEIGHT//2],
+                       GAME_OVER_TEXT_SIZE-10, GREY, START_FONT)
+        self.draw_text(quit_text, self.screen, [WIDTH//2, HEIGHT//2+50],
+                       GAME_OVER_TEXT_SIZE-10, RED, START_FONT)
+        trofeu = pygame.image.load("data/images/trofeu.png").convert_alpha()
+        w, h = trofeu.get_size()
+        image = pygame.transform.smoothscale(trofeu, (int(w*0.10), int(h*0.10)))
+        self.screen.blit(image, ((WIDTH-15)//3, HEIGHT//4-150))
         pygame.display.update()

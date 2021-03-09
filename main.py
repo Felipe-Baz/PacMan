@@ -5,19 +5,21 @@ if __name__ == '__main__':
     pygame.init()
     pygame.display.set_caption("PacMan - By FelipeBazCode")
     music_choose = 0
+
     #while True:
-    #   print("[1] Musica 1: Dirty Ninoff Fantastic: ")
+    #    print("[1] Musica 1: Dirty Ninoff Fantastic: ")
     #    print("[2] Musica 2: PacMan Theme remix")
     #    print("qual sera a musica de hj? 1 ou 2:")
     #    music_choose = int(input(" "))
     #    if music_choose == 1 or music_choose == 2:
-    #        if int(input("tamo de testezada? [0 ou 1]")):
+    #        if int(input("tamo de teste? [0 ou 1]")):
     #            atual_score = {"HighScore": 0}
     #            # salva as informações do dicionario de informações relevantes em um arquivo .json para analise
     #            with open(f'data/Memory/HighScore.json', 'w') as json_file:
     #                json.dump(atual_score, json_file, indent=3, ensure_ascii=False)
     #            json_file.close()
     #        break
+
 
     video = VideoFileClip('data/video/IntroFinalVersion.mp4')
     video.preview()
