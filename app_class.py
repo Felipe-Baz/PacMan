@@ -171,6 +171,7 @@ class App:
                                  int(item.y * self.cell_height) + TOP_BOTTOM_BUFFER // 2))
 
 
+
     def reset(self):
         self.player.lives = 3
         self.player.current_score = 0
@@ -337,6 +338,7 @@ class App:
         self.draw_backpack()
         self.draw_itens()
         self.draw_itens_backpack()
+        #self.draw_pac()
         self.player.draw()
         for enemy in self.enemies:
             enemy.draw()

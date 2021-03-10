@@ -42,9 +42,17 @@ class Player:
                 print("entrou")
                 self.app.state = 'win'
 
+    def draw_pac(self):
+        image = pygame.image.load("data/images/PacMan2.png")
+        image = pygame.transform.smoothscale(image, (int(self.app.cell_width),
+                                                     int(self.app.cell_height)))
+        self.app.screen.blit(image, (int(self.grid_pos.x * self.app.cell_width) + TOP_BOTTOM_BUFFER // 2,
+                                     int(self.grid_pos.y * self.app.cell_height) + TOP_BOTTOM_BUFFER // 2))
+
     def draw(self):
+        #self.draw_pac()
         pygame.draw.circle(self.app.screen, PLAYER_COLOUR,
-                           (int(self.pix_pos.x), int(self.pix_pos.y)),
+                          (int(self.pix_pos.x), int(self.pix_pos.y)),
                            self.app.cell_width//2-2)
         #desenhando as vidas do player
         for x in range(self.lives):
