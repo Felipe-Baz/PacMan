@@ -250,7 +250,7 @@ class App:
     #    with open("data/Memory/walls.txt", 'r') as file:
     #        maps = file
     #     file.close()
-    #     with open(f'data/Memory/Mapa.json', 'w') as json_file:
+    #     with open(f'data/Memory/Mapas/Mapa.json', 'w') as json_file:
     #         json.dump({"Nome": 0, "Level": 0, "Mapa_Grid": maps}, json_file, indent=3, ensure_ascii=False)
     #     json_file.close()
 
